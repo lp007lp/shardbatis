@@ -1,144 +1,232 @@
 package com.rookiefly.open.shardbatis.converter;
 
-import net.sf.jsqlparser.expression.AllComparisonExpression;
-import net.sf.jsqlparser.expression.AnyComparisonExpression;
-import net.sf.jsqlparser.expression.BinaryExpression;
-import net.sf.jsqlparser.expression.CaseExpression;
-import net.sf.jsqlparser.expression.DateValue;
-import net.sf.jsqlparser.expression.DoubleValue;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.ExpressionVisitor;
-import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.InverseExpression;
-import net.sf.jsqlparser.expression.JdbcParameter;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.NullValue;
-import net.sf.jsqlparser.expression.Parenthesis;
-import net.sf.jsqlparser.expression.StringValue;
-import net.sf.jsqlparser.expression.TimeValue;
-import net.sf.jsqlparser.expression.TimestampValue;
-import net.sf.jsqlparser.expression.WhenClause;
-import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseAnd;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseOr;
-import net.sf.jsqlparser.expression.operators.arithmetic.BitwiseXor;
-import net.sf.jsqlparser.expression.operators.arithmetic.Concat;
-import net.sf.jsqlparser.expression.operators.arithmetic.Division;
-import net.sf.jsqlparser.expression.operators.arithmetic.Multiplication;
-import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
+import java.util.Iterator;
+
+import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.operators.arithmetic.*;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
-import net.sf.jsqlparser.expression.operators.relational.Between;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.ExistsExpression;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
-import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
-import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
-import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
-import net.sf.jsqlparser.expression.operators.relational.ItemsListVisitor;
-import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
-import net.sf.jsqlparser.expression.operators.relational.Matches;
-import net.sf.jsqlparser.expression.operators.relational.MinorThan;
-import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
-import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
+import net.sf.jsqlparser.expression.operators.conditional.XorExpression;
+import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.FromItemVisitor;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectVisitor;
-import net.sf.jsqlparser.statement.select.SubJoin;
-import net.sf.jsqlparser.statement.select.SubSelect;
-import net.sf.jsqlparser.statement.select.Union;
+import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.values.ValuesStatement;
 
-import java.util.Iterator;
-
-/**
- * @author sean.he
- */
 public class SelectSqlConverter extends AbstractSqlConverter {
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * com.google.code.shardbatis.converter.AbstractSqlConverter#doConvert(net
-     * .sf.jsqlparser.statement.Statement, java.lang.Object, java.lang.String)
-     */
     @Override
-    protected Statement doConvert(Statement statement, final Object params,
-                                  final String mapperId) {
+    protected Statement doConvert(Statement statement, Object params, String mapperId) {
         if (!(statement instanceof Select)) {
-            throw new IllegalArgumentException(
-                    "The argument statement must is instance of Select.");
+            throw new IllegalArgumentException("The argument statement must is instance of Select.");
         }
+
         TableNameModifier modifier = new TableNameModifier(params, mapperId);
         ((Select) statement).getSelectBody().accept(modifier);
         return statement;
     }
 
-    private class TableNameModifier implements SelectVisitor, FromItemVisitor,
-            ExpressionVisitor, ItemsListVisitor {
+    private class TableNameModifier implements SelectVisitor, FromItemVisitor, ExpressionVisitor, ItemsListVisitor {
         private Object params;
         private String mapperId;
 
-        TableNameModifier(Object params, String mapperId) {
+        public TableNameModifier(Object params, String mapperId) {
             this.params = params;
             this.mapperId = mapperId;
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        public void visit(PlainSelect plainSelect) {
-            plainSelect.getFromItem().accept(this);
+        public void visit(XorExpression xorExpression) {
 
-            if (plainSelect.getJoins() != null) {
-                for (Iterator joinsIt = plainSelect.getJoins().iterator(); joinsIt
-                        .hasNext(); ) {
-                    Join join = (Join) joinsIt.next();
-                    join.getRightItem().accept(this);
-                }
+        }
+
+        @Override
+        public void visit(RowGetExpression rowGetExpression) {
+
+        }
+
+        @Override
+        public void visit(ArrayConstructor arrayConstructor) {
+
+        }
+
+        @Override
+        public void visit(VariableAssignment variableAssignment) {
+
+        }
+
+        @Override
+        public void visit(XMLSerializeExpr xmlSerializeExpr) {
+
+        }
+
+        @Override
+        public void visit(TimezoneExpression timezoneExpression) {
+
+        }
+
+        @Override
+        public void visit(JsonAggregateFunction jsonAggregateFunction) {
+
+        }
+
+        @Override
+        public void visit(JsonFunction jsonFunction) {
+
+        }
+
+        @Override
+        public void visit(ConnectByRootOperator connectByRootOperator) {
+
+        }
+
+        @Override
+        public void visit(OracleNamedFunctionParameter oracleNamedFunctionParameter) {
+
+        }
+
+        @Override
+        public void visit(ExpressionList paramExpressionList) {
+            Iterator iter = paramExpressionList.getExpressions().iterator();
+            while (iter.hasNext()) {
+                Expression expression = (Expression) iter.next();
+                expression.accept(this);
             }
-            if (plainSelect.getWhere() != null) {
-                plainSelect.getWhere().accept(this);
-            }
+        }
+
+        @Override
+        public void visit(NamedExpressionList namedExpressionList) {
 
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        public void visit(Union union) {
-            for (Iterator iter = union.getPlainSelects().iterator(); iter
-                    .hasNext(); ) {
-                PlainSelect plainSelect = (PlainSelect) iter.next();
-                visit(plainSelect);
-            }
+        public void visit(MultiExpressionList paramMultiExpressionList) {
+            // TODO Auto-generated method stub
+
         }
 
         @Override
-        public void visit(Table tableName) {
-            String table = tableName.getName();
-            table = convertTableName(table, params, mapperId);
-            // convert table name
-            tableName.setName(table);
+        public void visit(BitwiseRightShift bitwiseRightShift) {
+
         }
 
         @Override
-        public void visit(SubSelect subSelect) {
-            subSelect.getSelectBody().accept(this);
+        public void visit(BitwiseLeftShift bitwiseLeftShift) {
+
         }
 
         @Override
-        public void visit(Addition addition) {
-            visitBinaryExpression(addition);
+        public void visit(NullValue paramNullValue) {
+            // TODO Auto-generated method stub
+
         }
 
         @Override
-        public void visit(AndExpression andExpression) {
-            visitBinaryExpression(andExpression);
+        public void visit(Function paramFunction) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(SignedExpression paramSignedExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(JdbcParameter paramJdbcParameter) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(JdbcNamedParameter paramJdbcNamedParameter) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(DoubleValue paramDoubleValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(LongValue paramLongValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(HexValue paramHexValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(DateValue paramDateValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(TimeValue paramTimeValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(TimestampValue paramTimestampValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(Parenthesis paramParenthesis) {
+            paramParenthesis.getExpression().accept(this);
+
+        }
+
+        @Override
+        public void visit(StringValue paramStringValue) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(Addition paramAddition) {
+            visitBinaryExpression(paramAddition);
+        }
+
+        @Override
+        public void visit(Division paramDivision) {
+            visitBinaryExpression(paramDivision);
+        }
+
+        @Override
+        public void visit(IntegerDivision division) {
+
+        }
+
+        @Override
+        public void visit(Multiplication paramMultiplication) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(Subtraction paramSubtraction) {
+            visitBinaryExpression(paramSubtraction);
+        }
+
+        @Override
+        public void visit(AndExpression paramAndExpression) {
+            visitBinaryExpression(paramAndExpression);
+        }
+
+        @Override
+        public void visit(OrExpression paramOrExpression) {
+            visitBinaryExpression(paramOrExpression);
         }
 
         @Override
@@ -149,107 +237,121 @@ public class SelectSqlConverter extends AbstractSqlConverter {
         }
 
         @Override
-        public void visit(Column tableColumn) {
+        public void visit(EqualsTo paramEqualsTo) {
+            visitBinaryExpression(paramEqualsTo);
         }
 
         @Override
-        public void visit(Division division) {
-            visitBinaryExpression(division);
+        public void visit(GreaterThan paramGreaterThan) {
+            visitBinaryExpression(paramGreaterThan);
+
         }
 
         @Override
-        public void visit(DoubleValue doubleValue) {
+        public void visit(GreaterThanEquals paramGreaterThanEquals) {
+            visitBinaryExpression(paramGreaterThanEquals);
         }
 
         @Override
-        public void visit(EqualsTo equalsTo) {
-            visitBinaryExpression(equalsTo);
+        public void visit(InExpression paramInExpression) {
+            paramInExpression.getLeftExpression().accept(this);
+
+            paramInExpression.getRightItemsList().accept(this);
+            paramInExpression.getRightItemsList().accept(this);
         }
 
         @Override
-        public void visit(Function function) {
+        public void visit(FullTextSearch fullTextSearch) {
+
         }
 
         @Override
-        public void visit(GreaterThan greaterThan) {
-            visitBinaryExpression(greaterThan);
+        public void visit(IsNullExpression paramIsNullExpression) {
+            // TODO Auto-generated method stub
+
         }
 
         @Override
-        public void visit(GreaterThanEquals greaterThanEquals) {
-            visitBinaryExpression(greaterThanEquals);
+        public void visit(IsBooleanExpression isBooleanExpression) {
+
         }
 
         @Override
-        public void visit(InExpression inExpression) {
-            inExpression.getLeftExpression().accept(this);
-            inExpression.getItemsList().accept(this);
+        public void visit(LikeExpression paramLikeExpression) {
+            visitBinaryExpression(paramLikeExpression);
         }
 
         @Override
-        public void visit(InverseExpression inverseExpression) {
-            inverseExpression.getExpression().accept(this);
+        public void visit(MinorThan paramMinorThan) {
+            visitBinaryExpression(paramMinorThan);
         }
 
         @Override
-        public void visit(IsNullExpression isNullExpression) {
+        public void visit(MinorThanEquals paramMinorThanEquals) {
+            visitBinaryExpression(paramMinorThanEquals);
         }
 
         @Override
-        public void visit(JdbcParameter jdbcParameter) {
+        public void visit(NotEqualsTo paramNotEqualsTo) {
+            visitBinaryExpression(paramNotEqualsTo);
         }
 
         @Override
-        public void visit(LikeExpression likeExpression) {
-            visitBinaryExpression(likeExpression);
+        public void visit(Column paramColumn) {
+            // TODO Auto-generated method stub
         }
 
         @Override
-        public void visit(ExistsExpression existsExpression) {
-            existsExpression.getRightExpression().accept(this);
+        public void visit(CaseExpression paramCaseExpression) {
+            // TODO Auto-generated method stub
+
         }
 
         @Override
-        public void visit(LongValue longValue) {
+        public void visit(WhenClause paramWhenClause) {
+            // TODO Auto-generated method stub
+
         }
 
         @Override
-        public void visit(MinorThan minorThan) {
-            visitBinaryExpression(minorThan);
+        public void visit(ExistsExpression paramExistsExpression) {
+            paramExistsExpression.getRightExpression().accept(this);
+        }
+
+//        @Override
+//        public void visit(AllComparisonExpression paramAllComparisonExpression) {
+//            paramAllComparisonExpression.getSubSelect().getSelectBody().accept(this);
+//        }
+
+        @Override
+        public void visit(AnyComparisonExpression paramAnyComparisonExpression) {
+            paramAnyComparisonExpression.getSubSelect().getSelectBody().accept(this);
         }
 
         @Override
-        public void visit(MinorThanEquals minorThanEquals) {
-            visitBinaryExpression(minorThanEquals);
+        public void visit(Concat paramConcat) {
+            visitBinaryExpression(paramConcat);
         }
 
         @Override
-        public void visit(Multiplication multiplication) {
-            visitBinaryExpression(multiplication);
+        public void visit(Matches paramMatches) {
+            visitBinaryExpression(paramMatches);
+
         }
 
         @Override
-        public void visit(NotEqualsTo notEqualsTo) {
-            visitBinaryExpression(notEqualsTo);
+        public void visit(BitwiseAnd paramBitwiseAnd) {
+            visitBinaryExpression(paramBitwiseAnd);
         }
 
         @Override
-        public void visit(NullValue nullValue) {
+        public void visit(BitwiseOr paramBitwiseOr) {
+            visitBinaryExpression(paramBitwiseOr);
         }
 
         @Override
-        public void visit(OrExpression orExpression) {
-            visitBinaryExpression(orExpression);
-        }
-
-        @Override
-        public void visit(Parenthesis parenthesis) {
-            parenthesis.getExpression().accept(this);
-        }
-
-        @Override
-        public void visit(Subtraction subtraction) {
-            visitBinaryExpression(subtraction);
+        public void visit(BitwiseXor paramBitwiseXor) {
+            visitBinaryExpression(paramBitwiseXor);
         }
 
         public void visitBinaryExpression(BinaryExpression binaryExpression) {
@@ -258,97 +360,211 @@ public class SelectSqlConverter extends AbstractSqlConverter {
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        public void visit(ExpressionList expressionList) {
-            for (Iterator iter = expressionList.getExpressions().iterator(); iter
-                    .hasNext(); ) {
-                Expression expression = (Expression) iter.next();
-                expression.accept(this);
+        public void visit(CastExpression paramCastExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(Modulo paramModulo) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(AnalyticExpression paramAnalyticExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(ExtractExpression paramExtractExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(IntervalExpression paramIntervalExpression) {
+            // paramIntervalExpression.getExpression().accept(this);
+
+        }
+
+        @Override
+        public void visit(OracleHierarchicalExpression paramOracleHierarchicalExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(RegExpMatchOperator paramRegExpMatchOperator) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(JsonExpression paramJsonExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(JsonOperator jsonOperator) {
+
+        }
+
+        @Override
+        public void visit(RegExpMySQLOperator paramRegExpMySQLOperator) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(UserVariable paramUserVariable) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(NumericBind paramNumericBind) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(KeepExpression paramKeepExpression) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(MySQLGroupConcat paramMySQLGroupConcat) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(ValueListExpression valueListExpression) {
+
+        }
+
+        @Override
+        public void visit(RowConstructor paramRowConstructor) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(OracleHint oracleHint) {
+
+        }
+
+        @Override
+        public void visit(TimeKeyExpression timeKeyExpression) {
+
+        }
+
+        @Override
+        public void visit(DateTimeLiteralExpression dateTimeLiteralExpression) {
+
+        }
+
+        @Override
+        public void visit(NotExpression notExpression) {
+
+        }
+
+        @Override
+        public void visit(NextValExpression nextValExpression) {
+
+        }
+
+        @Override
+        public void visit(CollateExpression collateExpression) {
+
+        }
+
+        @Override
+        public void visit(SimilarToExpression aThis) {
+
+        }
+
+        @Override
+        public void visit(ArrayExpression aThis) {
+
+        }
+
+        @Override
+        public void visit(Table paramTable) {
+            String table = paramTable.getName();
+            table = SelectSqlConverter.this.convertTableName(table, this.params, this.mapperId);
+
+            paramTable.setName(table);
+        }
+
+        @Override
+        public void visit(SubSelect paramSubSelect) {
+            paramSubSelect.getSelectBody().accept(this);
+        }
+
+        @Override
+        public void visit(SubJoin subJoin) {
+
+        }
+
+
+        @Override
+        public void visit(LateralSubSelect paramLateralSubSelect) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(ValuesList paramValuesList) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void visit(TableFunction tableFunction) {
+
+        }
+
+        @Override
+        public void visit(ParenthesisFromItem parenthesisFromItem) {
+
+        }
+
+        @Override
+        public void visit(PlainSelect plainSelect) {
+            plainSelect.getFromItem().accept(this);
+            if (plainSelect.getJoins() != null) {
+                Iterator joinsIt = plainSelect.getJoins().iterator();
+                while (joinsIt.hasNext()) {
+                    Join join = (Join) joinsIt.next();
+                    join.getRightItem().accept(this);
+                }
             }
+            if (plainSelect.getWhere() != null) {
+                plainSelect.getWhere().accept(this);
+            }
+        }
+
+        @Override
+        public void visit(SetOperationList paramSetOperationList) {
+            // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void visit(DateValue dateValue) {
-        }
-
-        @Override
-        public void visit(TimestampValue timestampValue) {
-        }
-
-        @Override
-        public void visit(TimeValue timeValue) {
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * net.sf.jsqlparser.expression.ExpressionVisitor#visit(net.sf.jsqlparser
-         * .expression.CaseExpression)
-         */
-        @Override
-        public void visit(CaseExpression caseExpression) {
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see
-         * net.sf.jsqlparser.expression.ExpressionVisitor#visit(net.sf.jsqlparser
-         * .expression.WhenClause)
-         */
-        @Override
-        public void visit(WhenClause whenClause) {
-        }
-
-        @Override
-        public void visit(AllComparisonExpression allComparisonExpression) {
-            allComparisonExpression.GetSubSelect().getSelectBody().accept(this);
-        }
-
-        @Override
-        public void visit(AnyComparisonExpression anyComparisonExpression) {
-            anyComparisonExpression.GetSubSelect().getSelectBody().accept(this);
-        }
-
-        @Override
-        public void visit(SubJoin subjoin) {
-            subjoin.getLeft().accept(this);
-            subjoin.getJoin().getRightItem().accept(this);
-        }
-
-        @Override
-        public void visit(Concat concat) {
-            visitBinaryExpression(concat);
-        }
-
-        @Override
-        public void visit(Matches matches) {
-            visitBinaryExpression(matches);
+        public void visit(WithItem paramWithItem) {
+            // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void visit(BitwiseAnd bitwiseAnd) {
-            visitBinaryExpression(bitwiseAnd);
+        public void visit(ValuesStatement valuesStatement) {
 
         }
 
-        @Override
-        public void visit(BitwiseOr bitwiseOr) {
-            visitBinaryExpression(bitwiseOr);
-
-        }
-
-        @Override
-        public void visit(BitwiseXor bitwiseXor) {
-            visitBinaryExpression(bitwiseXor);
-        }
-
-        @Override
-        public void visit(StringValue stringValue) {
-        }
     }
-
 }
